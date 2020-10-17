@@ -22,7 +22,7 @@ import cucumber.api.junit.Cucumber;
         features = {"src/test/java/features"},
         tags = "~@Ignore",
         glue = {"stepDefinition"},
-        plugin = {"pretty", "html:target/cucumber-reports", "json: target/cucumber.json",
+        plugin = {"pretty", "html:target/cucumber-reports", "json:target/cucumber.json",
         			"com.vimalselvam.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/report.html"},
         monochrome = true)
 public class TestRunner {
