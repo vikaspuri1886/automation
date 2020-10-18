@@ -14,58 +14,40 @@ import com.jayway.restassured.specification.RequestSpecification;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.Map;
-import java.util.Random;
 
 public class Driver{
 	private String uri;
 	private ValidatableResponse response;
+	private String contentType;
+	private String body;
+	private static final String GET = "GET";
+	private static final String POST = "POST";
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void sendRequest(String reqestMethod) {
-		 if("GET".equalsIgnoreCase(reqestMethod)) {
+		 if(GET.equalsIgnoreCase(reqestMethod)) {
 			 response = given().when().get(uri).then();
+		 } else if(POST.equalsIgnoreCase(reqestMethod)) {
+			 RequestSpecification request = RestAssured.given();
+				request.header("Content-Type", this.contentType);
+				request.body(this.body);
+		 		
+			 response =	request.post(uri).then();
 		 }
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void testCustomerRegister() {
-		RestAssured.baseURI = "http://localhost:8081/api/v1/customers/registrations";
-		
-		RequestSpecification request = RestAssured.given();
-		request.header("Content-Type", "application/json");
-		request.body(customerData());
- 		request.post("/registerUser").then().statusCode(200).body("message", new ResponseAwareMatcher() {
-            public Matcher matcher(ResponseBody response) throws Exception {
-				return equalTo("Customer registered");
-			}
-       });
-	}
-	
-	@SuppressWarnings(value = "unchecked")
-	private String customerData() {
-		Random random = new Random();
-		
-		JSONObject requestParams = new JSONObject();
-		requestParams.put("firstName", "Virender"); 
-		requestParams.put("lastName", "Singh");	 
-		requestParams.put("phoneNumber", "simpleuser001");
-		requestParams.put("emailId",  String.valueOf(random.nextInt()).concat("@gmail.com"));
-		requestParams.put("password", "password1");
-		return requestParams.toJSONString();
-	}
-
 	public void createURI(String serviceName) {
-		uri = "http://testingautomation.us-e2.cloudhub.io/";
+		this.uri = serviceName;
 	}
 
 	public void addEndpoint(String endpoint) {
-		uri = uri.concat(endpoint);
+		this.uri = uri.concat(endpoint);
 	}
 
 	public void expectedResponse(int responseCode) {
 		response.statusCode(responseCode);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void validateResponse(Map<String, String> validateData) {
 		for(Map.Entry<String, String> entrySet: validateData.entrySet()) {
 			String key = entrySet.getKey();
@@ -78,13 +60,17 @@ public class Driver{
 		}
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void makeSureThatGoogleIsUpBackup() {
-		 given().when().get("http://testingautomation.us-e2.cloudhub.io/test").then().
-		 statusCode(200).body("givenName", new ResponseAwareMatcher() {
-             public Matcher matcher(ResponseBody response) throws Exception {
-				return equalTo("vikas");
-			}
-        });
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setRequestBody(Map<String, String> requestBody) {
+		JSONObject requestParams = new JSONObject();
+		
+		for(Map.Entry<String, String> entrySet: requestBody.entrySet()) {
+			requestParams.put(entrySet.getKey(), entrySet.getValue()); 
+		}
+		this.body = requestParams.toJSONString();
 	}
 }

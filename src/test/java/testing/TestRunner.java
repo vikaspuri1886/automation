@@ -27,24 +27,6 @@ import cucumber.api.junit.Cucumber;
         monochrome = true)
 public class TestRunner {
 	
-//	@BeforeClass
-//	public static void Setup() {
-//		Properties prop = new Properties();
-//		try {
-//			FileInputStream in = new FileInputStream(new File("src/test/java/config/config.properties"));
-//			prop.load(in);
-//			in.close();
-//			for(String key : prop.stringPropertyNames()) {
-//				System.out.println("Key : "+key+"; Value : "+prop.getProperty(key));
-//			}
-//		}catch(FileNotFoundException fnfe) {
-//			fnfe.printStackTrace();
-//		}catch(IOException ioe) {
-//			ioe.printStackTrace();
-//		}
-//		
-//	}
-	
 	@AfterClass
     public static void writeExtentReport() {
         Reporter.loadXMLConfig(new File("src/test/java/config/extent_report-config.xml"));
